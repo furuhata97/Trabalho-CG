@@ -1,0 +1,51 @@
+#nav-main {
+    height: 50px;
+}
+
+
+nav.navbar{
+    padding-top: 10px; 
+    font-family: Roboto;
+}
+
+.nav-item{
+	padding-left: 4px;
+}
+
+img.logoTopo{
+    background: transparent;
+    height: 45px;
+}
+
+.custom-toggler.navbar-toggler {
+    border-color: #fff;
+}
+
+.custom-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 0.7)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.collapse-background{
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0.8;
+}
+
+
+@media screen and (min-width: 768px) {
+    .navbar-fixed-top.scrolled {
+        /*background: rgba(0, 0, 0, 0.7);*/
+        opacity: 0.8;
+        height: 70px;
+    }
+
+
+@media screen and (max-width: 767px) {
+    .navbar-fixed-top {
+        background: rgba(0, 0, 0, 0.7);
+        opacity: 0.8;
+        height: 70px;
+    }
+    .btnContact{
+        width: 100% !important;
+    }
+}
