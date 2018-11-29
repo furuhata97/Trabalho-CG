@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<link rel="stylesheet" href="style.css">
 	<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.2.3/math.js"></script>
 
 	<meta charset="utf-8">
   <style>
@@ -31,13 +32,13 @@
     <div class="collapse navbar-collapse" id="navmenu">
         <ul class="navbar-nav mr-auto" id="navlist">
             <li class="nav-item">
-            	<button id="linha" type="button" class="btn" style="background-color: #9900cc"><img src="segment.png"> Linha</button>
+            	<button id="linha" type="button" class="btn" style="background-color: #9900cc"><img src="segment.png"> Reta</button>
             </li>
             <li class="nav-item">
             	<button id="quadrado" type="button" class="btn btn-info"><i class="fas fa-vector-square"></i> Quadrado</button>
             </li>
             <li class="nav-item">
-                <button id="retangulo" type="button" class="btn" style="background-color: #2940ad"><i class="fas fa-battery-empty"></i> Retângulo</button>
+                <button id="retangulo" type="button" class="btn" style="background-color: #2940ad; color: white"><i class="fas fa-battery-empty"></i> Retângulo</button>
             </li>
             <li class="nav-item">
             	<button id="circulo" type="button" class="btn" style="background-color: #4dff4d"><i class="fas fa-circle"></i> Círculo</button>
@@ -52,19 +53,109 @@
                 <button id="select" type="button" class="btn btn-dark"><i class="far fa-hand-pointer"></i> Selecionar</button>
             </li>
             <li class="nav-item">
-            	<button id="rotacao" type="button" class="btn btn-primary"><i class="fas fa-undo-alt"></i> Rotação</button>
+            	<button id="rotacao" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fas fa-undo-alt"></i> Rotação</button>
             </li>
             <li class="nav-item">
-            	<button id="translacao" type="button" class="btn btn-success"><i class="fas fa-arrows-alt"></i> Translação</button>
+            	<button id="translacao" type="button" class="btn btn-success" data-toggle="modal" data-target="#myModaltrans"><i class="fas fa-arrows-alt"></i> Translação</button>
             </li>
             <li class="nav-item">
-            	<button id="escala" type="button" class="btn btn-warning"><i class="fa fa-expand"></i> Escala</button>
+            	<button id="escala" type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModalescala"><i class="fa fa-expand"></i> Escala</button>
             </li>
             <li class="nav-item">
-            	<button id="zoom" type="button" class="btn btn-pink" style="background-color: #ff0066"><i class="fas fa-expand-arrows-alt"></i> Zoom Extend</button>
+            	<button id="zoom" type="button" class="btn btn-pink" style="background-color: #ff0066" data-toggle="modal" data-target="#myModalzoom"><i class="fas fa-expand-arrows-alt"></i> Zoom Extend</button>
             </li>
         </ul>
     </div>
+
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Rotação</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label for="grau">Selecione o grau de rotação: </label>
+            <input id="grau" type="number" min="-360" max="360" step="1" value="0">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button id="rot_ok" type="button" class="btn btn-primary" data-dismiss="modal">Aplicar transformação</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="myModaltrans" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Translação</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label for="grau">Selecione as novas coordenadas X e Y: </label><br>
+            <span>X: </span><input id="Xs" type="number" min="0" max="5000" step="1" value="0"><br>
+            <span>Y: </span><input id="Ys" type="number" min="0" max="4500" step="1" value="0">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button id="trans_ok" type="button" class="btn btn-primary" data-dismiss="modal">Aplicar transformação</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="myModalzoom" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Zoom Extend</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label for="grau">Selecione a largura e altura da janela: </label><br>
+            <span>Altura: </span><input id="altura" type="number" min="0" max="5000" step="1" value="0"><br>
+            <span>Largura: </span><input id="largura" type="number" min="0" max="4500" step="1" value="0">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button id="zoom_ok" type="button" class="btn btn-primary" data-dismiss="modal">Aplicar transformação</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="myModalescala" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Zoom Extend</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label for="grau">Selecione a escala X e Y: </label><br>
+            <span>X: </span><input id="scaleX" type="number" min="0.3" max="15" step="1" value="1"><br>
+            <span>Y: </span><input id="scaleY" type="number" min="0.3" max="15" step="1" value="1">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button id="escala_ok" type="button" class="btn btn-primary" data-dismiss="modal">Aplicar transformação</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 	</nav>
 	<section id="janela">
 		<div id="container" style="background-color: white"></div>

@@ -34,21 +34,9 @@
       strokeWidth: 4
     });
 
-    // add the shape to the layer
     layer.add(arrow1);
     layer.add(arrow2);
 
-    /*var rect = new Konva.Rect({
-      x: 160,
-      y: 60,
-      width: 100,
-      height: 90,
-      fill: 'red',
-      name: 'rect',
-      stroke: 'black',
-      draggable: true
-    });
-    layer.add(rect);*/
 
     var text = new Konva.Text({
       x: 5,
@@ -116,8 +104,8 @@
             }else{
               lines = [
               title.name(),
-              'x: ' + title.x(),
-              'y: ' + title.y(),
+              'x: ' + X,
+              'y: ' + Y,
               'width: ' + title.width(),
               'height: ' + title.height(),
               'scaleX: ' + title.scaleX(),
@@ -183,89 +171,98 @@ $(function () {
 });
 
 var verificaTransformation = 0;
+var selecoes = [];
 
 function transform(){
 
     stage.on('dragmove', function (e) {
       if (verificaTransformation === 1) {
         if (e.target.hasName('triangle') || e.target.hasName('square') | e.target.hasName('circle') | e.target.hasName('line') | e.target.hasName('rectangle')) {
-          updateText(e.target.x(), e.target.y(), e.target);
-          //console.log(e.target);
+          var mousePos = stage.getPointerPosition();
+          updateText(mousePos.x, mousePos.y, e.target);
         }
       }
       
-    })
-    stage.on('transform', function (e) {
-      if (verificaTransformation === 1) {
-        if (e.target.hasName('triangle') || e.target.hasName('square') | e.target.hasName('circle') | e.target.hasName('line') | e.target.hasName('rectangle')) {
-          updateText(e.target.x(), e.target.y(), e.target);
-          console.log('transform');
-        }
-      }
     });
 
 
-      stage.on('click tap', function (e) {
+      stage.on('click', function (e) {
       if (verificaTransformation === 1) {
         // if click on empty area - remove all transformers
       if (e.target === stage) {
-        stage.find('Transformer').destroy();
-        layer.draw();
+
+
+        var circles = stage.find('.circle');
+        var squares = stage.find('.square');
+        var lines = stage.find('.line');
+        var rectangles = stage.find('.rectangle');
+        var triangles = stage.find('.triangle');
+
+        circles.each(function(shape) {
+              shape.stroke('black');
+              layer.draw(); 
+        });
+
+        squares.each(function(shape) {
+              shape.stroke('black');
+              layer.draw();          
+        });
+
+        lines.each(function(shape) {
+              shape.stroke('black');
+              layer.draw();           
+        });
+
+        rectangles.each(function(shape) {
+              shape.stroke('black');
+              layer.draw();           
+        });
+
+        triangles.each(function(shape) {
+              shape.stroke('black');
+              layer.draw();           
+        });
 
         return;
       }
-      // do nothing if clicked NOT on our rectangles
+      
       if (e.target.hasName('triangle')) {
-        stage.find('Transformer').destroy();
-        var tr = new Konva.Transformer();
-        layer.add(tr);
-        tr.attachTo(e.target);
+
+        e.target.stroke('red');
         layer.draw();
-        e.target.draggable(true);
+        console.log(e.target);
+        return;
       }
 
       if (e.target.hasName('circle')) {
-        stage.find('Transformer').destroy();
-        var tr = new Konva.Transformer();
-        layer.add(tr);
-        tr.attachTo(e.target);
+
+
+        e.target.stroke('red');
         layer.draw();
-        e.target.draggable(true);
+
         return;
       }
 
       if (e.target.hasName('square')) {
-        stage.find('Transformer').destroy();
-        var tr = new Konva.Transformer();
-        layer.add(tr);
-        tr.attachTo(e.target);
+
+        e.target.stroke('red');
         layer.draw();
-        e.target.draggable(true);
-        //e.target.rotate(45);
 
         return;
       }
 
       if (e.target.hasName('rectangle')) {
-        stage.find('Transformer').destroy();
-        var tr = new Konva.Transformer();
-        layer.add(tr);
-        tr.attachTo(e.target);
+
+        e.target.stroke('red');
         layer.draw();
-        e.target.draggable(true);
-        //e.target.rotate(45);
 
         return;
       }
 
       if (e.target.hasName('line')) {
-        stage.find('Transformer').destroy();
-        var tr = new Konva.Transformer();
-        layer.add(tr);
-        tr.attachTo(e.target);
+
+        e.target.stroke('red');
         layer.draw();
-        e.target.draggable(true);
-        //e.target.rotate(45);
 
         return;
       }
@@ -310,25 +307,496 @@ function stopDraggable(){
 }
 
 $(function () {
-    $("#rotacao").click(function () {
-      squareActive = false, circleActive = false, lineActive = false, triangleActive = false, RecActive = false;
+  $("#rotacao").click(function() {
+    verificaTransformation = 0;
+    squareActive = false, circleActive = false, lineActive = false, triangleActive = false, RecActive = false;
+    stopDraggable();
+  });
+});
 
+$(function () {
+    $("#rot_ok").click(function () {
+      verificaTransformation = 3;
+      squareActive = false, circleActive = false, lineActive = false, triangleActive = false, RecActive = false;
+      stopDraggable();
+      var grau = document.getElementById('grau').value;
+      if (verificaTransformation === 3) {
+        stage.on('click', function (e) {
+          if (e.target.hasName('rectangle') && verificaTransformation === 3) {
+            grau = document.getElementById('grau').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2], pontos[4], pontos[6]], [pontos[1], pontos[3], pontos[5], pontos[7]], [1, 1, 1, 1]]);
+            const mT = math.matrix([[1, 0, pontos[0]], [0, 1, pontos[1]], [0, 0, 1]]);
+            const rT = math. matrix([[Math.cos(grau * Math.PI / 180.0), -Math.sin(grau * Math.PI / 180.0), 0], [Math.sin(grau * Math.PI / 180.0), Math.cos(grau * Math.PI / 180.0), 0], [0, 0, 1]]);
+            const mTNeg = math.matrix([[1, 0, -pontos[0]], [0, 1, -pontos[1]], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, rT);
+            const matrix2 = math.multiply(matrix1, mTNeg);
+            const matrix3 = math.multiply(matrix2, mObj);
+            var max = matrix3.valueOf();
+            e.target.destroy();
+            console.log("Girar quadrado " + max[0][0] + " " + max[1][0]);
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2], max[0][3], max[1][3]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'rectangle',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+          if (e.target.hasName('line') && verificaTransformation === 3) {
+            grau = document.getElementById('grau').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2]], [pontos[1], pontos[3]], [1, 1]]);
+            const mT = math.matrix([[1, 0, pontos[0]], [0, 1, pontos[1]], [0, 0, 1]]);
+            const rT = math. matrix([[Math.cos(grau * Math.PI / 180.0), -Math.sin(grau * Math.PI / 180.0), 0], [Math.sin(grau * Math.PI / 180.0), Math.cos(grau * Math.PI / 180.0), 0], [0, 0, 1]]);
+            const mTNeg = math.matrix([[1, 0, -pontos[0]], [0, 1, -pontos[1]], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, rT);
+            const matrix2 = math.multiply(matrix1, mTNeg);
+            const matrix3 = math.multiply(matrix2, mObj);
+            var max = matrix3.valueOf();
+
+            e.target.destroy();
+
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1]],
+              stroke: 'black',
+              strokeWidth: 3,
+              lineCap: 'round',
+              lineJoin: 'round',
+              name: 'line',
+              draggable: false
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+          if (e.target.hasName('circle') && verificaTransformation === 3) {
+            grau = document.getElementById('grau').value;
+            const mObj = math.matrix([[e.target.x()], [e.target.y()], [1]]);
+            const mT = math.matrix([[1, 0, e.target.x()], [0, 1, e.target.y()], [0, 0, 1]]);
+            const rT = math. matrix([[Math.cos(grau * Math.PI / 180.0), -Math.sin(grau * Math.PI / 180.0), 0], [Math.sin(grau * Math.PI / 180.0), Math.cos(grau * Math.PI / 180.0), 0], [0, 0, 1]]);
+            const mTNeg = math.matrix([[1, 0, -e.target.x()], [0, 1, -e.target.y()], [0, 0, 1]]);
+            //const matrix1 = math.multiply(mT, rT);
+            //const matrix2 = math.multiply(matrix1, mTNeg);
+            const matrix3 = math.multiply(rT, mObj);
+            var rad = e.target.radius();
+            var max = matrix3.valueOf();
+
+            e.target.destroy();
+
+            layer.add(new Konva.Circle({
+              x: max[0][0],
+              y: max[1][0],
+              radius: rad,
+              stroke: 'black',
+              strokeWidth: 2,
+              name: 'circle',
+              draggable: false
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+
+          if (e.target.hasName('triangle') && verificaTransformation === 3) {
+            grau = document.getElementById('grau').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2], pontos[4]], [pontos[1], pontos[3], pontos[5]], [1, 1, 1]]);
+            const mT = math.matrix([[1, 0, pontos[0]], [0, 1, pontos[1]], [0, 0, 1]]);
+            const rT = math. matrix([[Math.cos(grau * Math.PI / 180.0), -Math.sin(grau * Math.PI / 180.0), 0], [Math.sin(grau * Math.PI / 180.0), Math.cos(grau * Math.PI / 180.0), 0], [0, 0, 1]]);
+            const mTNeg = math.matrix([[1, 0, -pontos[0]], [0, 1, -pontos[1]], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, rT);
+            const matrix2 = math.multiply(matrix1, mTNeg);
+            const matrix3 = math.multiply(matrix2, mObj);
+            var max = matrix3.valueOf();
+            e.target.destroy();
+
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'triangle',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+          if (e.target.hasName('square') && verificaTransformation === 3) {
+            grau = document.getElementById('grau').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2], pontos[4], pontos[6]], [pontos[1], pontos[3], pontos[5], pontos[7]], [1, 1, 1, 1]]);
+            const mT = math.matrix([[1, 0, pontos[0]], [0, 1, pontos[1]], [0, 0, 1]]);
+            const rT = math. matrix([[Math.cos(grau * Math.PI / 180.0), -Math.sin(grau * Math.PI / 180.0), 0], [Math.sin(grau * Math.PI / 180.0), Math.cos(grau * Math.PI / 180.0), 0], [0, 0, 1]]);
+            const mTNeg = math.matrix([[1, 0, -pontos[0]], [0, 1, -pontos[1]], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, rT);
+            const matrix2 = math.multiply(matrix1, mTNeg);
+            const matrix3 = math.multiply(matrix2, mObj);
+            var max = matrix3.valueOf();
+            e.target.destroy();
+            console.log("Girar quadrado " + max[0][0] + " " + max[1][0]);
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2], max[0][3], max[1][3]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'square',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+        });
+      }
     });
 });
 
 $(function () {
-    $("#translacao").click(function () {
+  $("#translacao").click(function() {
+    verificaTransformation = 0;
+    squareActive = false, circleActive = false, lineActive = false, triangleActive = false, RecActive = false;
+    stopDraggable();
+  });
+});
+
+$(function () {
+    $("#trans_ok").click(function () {
+      verificaTransformation = 2;
+      squareActive = false, circleActive = false, lineActive = false, triangleActive = false, RecActive = false;
+      stopDraggable();
+      var xS = document.getElementById('Xs').value;
+      var yS = document.getElementById('Ys').value;
+      if (verificaTransformation === 2) {
+        stage.on('click', function (e) {
+          if (e.target.hasName('rectangle') && verificaTransformation === 2) {
+            var xS = document.getElementById('Xs').value;
+            var yS = document.getElementById('Ys').value;
+            pontos = e.target.points();
+            var dx = parseInt(xS, 10) - pontos[0];
+            var dy = parseInt(yS, 10) - pontos[1];
+            const mObj = math.matrix([[pontos[0], pontos[2], pontos[4], pontos[6]], [pontos[1], pontos[3], pontos[5], pontos[7]], [1, 1, 1, 1]]);
+            const mT = math.matrix([[1, 0, dx], [0, 1, dy], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, mObj);
+            var max = matrix1.valueOf();
+            e.target.destroy();
+            console.log("Transladar quadrado " + max[0][0] + " " + max[1][0]);
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2], max[0][3], max[1][3]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'rectangle',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+          if (e.target.hasName('triangle') && verificaTransformation === 2) {
+            var xS = document.getElementById('Xs').value;
+            var yS = document.getElementById('Ys').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2], pontos[4]], [pontos[1], pontos[3], pontos[5]], [1, 1, 1]]);
+            var dx = parseInt(xS, 10) - pontos[0];
+            var dy = parseInt(yS, 10) - pontos[1];
+            console.log(dx);
+            console.log(dy);
+            const mT = math.matrix([[1, 0, dx], [0, 1, dy], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, mObj);
+            console.log(matrix1);
+            var max = matrix1.valueOf();
+            e.target.destroy();
+
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'triangle',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+
+          if (e.target.hasName('circle') && verificaTransformation === 2) {
+            var xS = document.getElementById('Xs').value;
+            var yS = document.getElementById('Ys').value;
+            var dx = parseInt(xS, 10) - e.target.x();
+            var dy = parseInt(yS, 10) - e.target.y();
+            const mObj = math.matrix([[e.target.x()], [e.target.y()], [1]]);
+            const mT = math.matrix([[1, 0, dx], [0, 1, dy], [0, 0, 1]]);
+            const matrix3 = math.multiply(mT, mObj);
+            var rad = e.target.radius();
+            var max = matrix3.valueOf();
+
+            e.target.destroy();
+
+            layer.add(new Konva.Circle({
+              x: max[0][0],
+              y: max[1][0],
+              radius: rad,
+              stroke: 'black',
+              strokeWidth: 2,
+              name: 'circle',
+              draggable: false
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+
+          if (e.target.hasName('line') && verificaTransformation === 2) {
+            var xS = document.getElementById('Xs').value;
+            var yS = document.getElementById('Ys').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2]], [pontos[1], pontos[3]], [1, 1]]);
+            var dx = parseInt(xS, 10) - pontos[0];
+            var dy = parseInt(yS, 10) - pontos[1];
+            const mT = math.matrix([[1, 0, dx], [0, 1, dy], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, mObj);
+            console.log(matrix1);
+            var max = matrix1.valueOf();
+            e.target.destroy();
+
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'line',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+          if (e.target.hasName('square') && verificaTransformation === 2) {
+            var xS = document.getElementById('Xs').value;
+            var yS = document.getElementById('Ys').value;
+            pontos = e.target.points();
+            var dx = parseInt(xS, 10) - pontos[0];
+            var dy = parseInt(yS, 10) - pontos[1];
+            const mObj = math.matrix([[pontos[0], pontos[2], pontos[4], pontos[6]], [pontos[1], pontos[3], pontos[5], pontos[7]], [1, 1, 1, 1]]);
+            const mT = math.matrix([[1, 0, dx], [0, 1, dy], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, mObj);
+            var max = matrix1.valueOf();
+            e.target.destroy();
+            console.log("Transladar quadrado " + max[0][0] + " " + max[1][0]);
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2], max[0][3], max[1][3]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'square',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+        });
+      }
+      });
+    });
+
+
+$(function () {
+    $("#escala").click(function () {
       verificaTransformation = 0;
       squareActive = false, circleActive = false, lineActive = false, triangleActive = false, RecActive = false;
       stopDraggable();
       });
     });
 
+
 $(function () {
-    $("#escala").click(function () {
+    $("#escala_ok").click(function () {
+      verificaTransformation = 4;
       squareActive = false, circleActive = false, lineActive = false, triangleActive = false, RecActive = false;
+      stopDraggable();
+      var xS = document.getElementById('scaleX').value;
+      var yS = document.getElementById('scaleY').value;
+      if (verificaTransformation === 4) {
+        stage.on('click', function (e) {
+          if (e.target.hasName('rectangle') && verificaTransformation === 4) {
+            var xS = document.getElementById('scaleX').value;
+            var yS = document.getElementById('scaleY').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2], pontos[4], pontos[6]], [pontos[1], pontos[3], pontos[5], pontos[7]], [1, 1, 1, 1]]);
+            const mT = math.matrix([[1, 0, pontos[0]], [0, 1, pontos[1]], [0, 0, 1]]);
+            const mTNeg = math.matrix([[1, 0, -pontos[0]], [0, 1, -pontos[1]], [0, 0, 1]]);
+            const mS = math.matrix([[parseFloat(xS, 10), 0, 0], [0, parseFloat(yS, 10), 0], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, mS);
+            const matrix2 = math.multiply(matrix1, mTNeg);
+            const matrix3 = math.multiply(matrix2, mObj);
+            var max = matrix3.valueOf();
+            e.target.destroy();
+            console.log("Escala quadrado " + max[0][0] + " " + max[1][0]);
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2], max[0][3], max[1][3]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'rectangle',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+          if (e.target.hasName('triangle') && verificaTransformation === 4) {
+            var xS = document.getElementById('scaleX').value;
+            var yS = document.getElementById('scaleY').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2], pontos[4]], [pontos[1], pontos[3], pontos[5]], [1, 1, 1]]);
+            const mT = math.matrix([[1, 0, pontos[0]], [0, 1, pontos[1]], [0, 0, 1]]);
+            const mTNeg = math.matrix([[1, 0, -pontos[0]], [0, 1, -pontos[1]], [0, 0, 1]]);
+            const mS = math.matrix([[parseFloat(xS, 10), 0, 0], [0, parseFloat(yS, 10), 0], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, mS);
+            const matrix2 = math.multiply(matrix1, mTNeg);
+            const matrix3 = math.multiply(matrix2, mObj);
+            var max = matrix3.valueOf();
+            e.target.destroy();
+
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'triangle',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+          if (e.target.hasName('circle') && verificaTransformation === 4) {
+            var xS = document.getElementById('scaleX').value;
+            var yS = document.getElementById('scaleY').value;
+            var rad = e.target.radius()*parseFloat(xS, 10);
+            var XC = e.target.x();
+            var YC = e.target.y();
+
+            e.target.destroy();
+
+            layer.add(new Konva.Circle({
+              x: XC,
+              y: YC,
+              radius: rad,
+              stroke: 'black',
+              strokeWidth: 2,
+              name: 'circle',
+              draggable: false
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+          if (e.target.hasName('square') && verificaTransformation === 4) {
+            var xS = document.getElementById('scaleX').value;
+            var yS = document.getElementById('scaleY').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2], pontos[4], pontos[6]], [pontos[1], pontos[3], pontos[5], pontos[7]], [1, 1, 1, 1]]);
+            const mT = math.matrix([[1, 0, pontos[0]], [0, 1, pontos[1]], [0, 0, 1]]);
+            const mTNeg = math.matrix([[1, 0, -pontos[0]], [0, 1, -pontos[1]], [0, 0, 1]]);
+            const mS = math.matrix([[parseFloat(xS, 10), 0, 0], [0, parseFloat(yS, 10), 0], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, mS);
+            const matrix2 = math.multiply(matrix1, mTNeg);
+            const matrix3 = math.multiply(matrix2, mObj);
+            var max = matrix3.valueOf();
+            e.target.destroy();
+            console.log("Escala quadrado " + max[0][0] + " " + max[1][0]);
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1], max[0][2], max[1][2], max[0][3], max[1][3]],
+              fill: 'transparent',
+              stroke: 'black',
+              strokeWidth: 2,
+              closed : true,
+              name: 'square',
+              draggable: false,
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+
+
+          if (e.target.hasName('line') && verificaTransformation === 4) {
+            var xS = document.getElementById('scaleX').value;
+            var yS = document.getElementById('scaleY').value;
+            pontos = e.target.points();
+            const mObj = math.matrix([[pontos[0], pontos[2]], [pontos[1], pontos[3]], [1, 1]]);
+            const mT = math.matrix([[1, 0, pontos[0]], [0, 1, pontos[1]], [0, 0, 1]]);
+            const mS = math.matrix([[parseFloat(xS, 10), 0, 0], [0, parseFloat(yS, 10), 0], [0, 0, 1]]);
+            const mTNeg = math.matrix([[1, 0, -pontos[0]], [0, 1, -pontos[1]], [0, 0, 1]]);
+            const matrix1 = math.multiply(mT, mS);
+            const matrix2 = math.multiply(matrix1, mTNeg);
+            const matrix3 = math.multiply(matrix2, mObj);
+            var max = matrix3.valueOf();
+
+            e.target.destroy();
+
+            layer.add(new Konva.Line({
+              points: [max[0][0], max[1][0], max[0][1], max[1][1]],
+              stroke: 'black',
+              strokeWidth: 3,
+              lineCap: 'round',
+              lineJoin: 'round',
+              name: 'line',
+              draggable: false
+            }));
+
+            stage.draw();
+            verificaTransformation = 0;
+            return;
+          }
+        });
+      }
       });
     });
+
 
 $(function () {
     $("#select").click(function () {
@@ -341,6 +809,19 @@ $(function () {
 $(function () {
     $("#zoom").click(function () {
       squareActive = false, circleActive = false, lineActive = false, triangleActive = false, RecActive = false;
+      });
+    });
+
+
+$(function () {
+    $("#zoom_ok").click(function () {
+      squareActive = false, circleActive = false, lineActive = false, triangleActive = false, RecActive = false;
+      var altura = document.getElementById('altura').value;
+      var largura = document.getElementById('largura').value;
+      stage.width(parseInt(largura, 10));
+      stage.height(parseInt(altura, 10));
+      stage.draw();
+      console.log('Altura: ' + stage.height());
       });
     });
 
@@ -378,7 +859,7 @@ var listLayer = [];
           
           clickSquare(ponto2.x, ponto2.y);
 
-          if (pos.x > ponto2.x) {
+          /*if (pos.x > ponto2.x) {
             if (pos.y < ponto2.y) {
               xPos = ponto2.x;
               yPos = pos.y;
@@ -394,20 +875,21 @@ var listLayer = [];
               xPos = pos.x;
               yPos = pos.y;
             }
-          }
-          var distancia = Math.abs(pos.x-ponto2.x);
+          }*/
           i = 0;
-          //console.log(ponto2);
-          console.log(Math.sqrt(Math.pow(Math.abs(ponto2.x-pos.x), 2)-Math.pow(Math.abs(ponto2.y-pos.y), 2)));
-              var square = new Konva.Rect({
-                x: xPos,
-                y: yPos,
-                width: distancia,
-                height: distancia,
+          var distancia = 0;
+          if (ponto2.y < pos.y) {
+            distancia = -Math.abs(pos.x-ponto2.x);
+          }else{
+            distancia = Math.abs(pos.x-ponto2.x);
+          }
+              var square = new Konva.Line({
+                points: [pos.x, pos.y, ponto2.x, pos.y, ponto2.x, (distancia+pos.y), pos.x, (distancia+pos.y)],
                 fill: 'transparent',
                 stroke: 'black',
                 strokeWidth: 2,
                 name: 'square',
+                closed : true,
                 draggable: false
               });  
               layer.add(square);
@@ -431,7 +913,7 @@ var listLayer = [];
           ponto2 = stage.getPointerPosition();
           clickSquare(ponto2.x, ponto2.y);
           var aux;
-          if (pos.x > ponto2.x) {
+          /*if (pos.x > ponto2.x) {
             if (pos.y < ponto2.y) {
               xPos = ponto2.x;
               yPos = pos.y;
@@ -447,21 +929,22 @@ var listLayer = [];
               xPos = pos.x;
               yPos = pos.y;
             }
-          }
-          var largura = Math.abs(pos.x-ponto2.x);
-          var altura = Math.abs(pos.y-ponto2.y);
+          }*/
+          //var largura = Math.abs(pos.x-ponto2.x);
           i = 0;
-          console.log(ponto2);
-          console.log(Math.sqrt(Math.pow(Math.abs(ponto2.x-pos.x), 2)-Math.pow(Math.abs(ponto2.y-pos.y), 2)));
-              var rectangle = new Konva.Rect({
-                x: xPos,
-                y: yPos,
-                width: largura,
-                height: altura,
+          var altura = 0;
+          if (ponto2.y < pos.y) {
+            altura = -Math.abs(pos.y-ponto2.y);
+          }else{
+            altura = Math.abs(pos.y-ponto2.y);
+          }
+              var rectangle = new Konva.Line({
+                points: [pos.x, pos.y, ponto2.x, pos.y, ponto2.x, (altura+pos.y), pos.x, (altura+pos.y)],
                 fill: 'transparent',
                 stroke: 'black',
                 strokeWidth: 2,
                 name: 'rectangle',
+                closed : true,
                 draggable: false
               });  
               layer.add(rectangle);
@@ -561,7 +1044,7 @@ var listLayer = [];
               points: [pos.x, pos.y, ponto2.x, ponto2.y, ponto3.x, ponto3.y],
               fill: 'transparent',
               stroke: 'black',
-              strokeWidth: 3,
+              strokeWidth: 2,
               closed : true,
               name: 'triangle',
               draggable: false
