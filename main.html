@@ -53,16 +53,29 @@
                 <button id="select" type="button" class="btn btn-dark"><i class="far fa-hand-pointer"></i> Selecionar</button>
             </li>
             <li class="nav-item">
-            	<button id="rotacao" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fas fa-undo-alt"></i> Rotação</button>
+                <button id="delete" type="button" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Apagar</button>
             </li>
             <li class="nav-item">
-            	<button id="translacao" type="button" class="btn btn-success" data-toggle="modal" data-target="#myModaltrans"><i class="fas fa-arrows-alt"></i> Translação</button>
+                <button id="undo" type="button" class="btn sortable" style="background-color: #F3F781"><i class="fas fa-undo-alt"></i> Desfazer</button>
             </li>
             <li class="nav-item">
-            	<button id="escala" type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModalescala"><i class="fa fa-expand"></i> Escala</button>
+                <div class="btn-group">
+                  <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #FA58AC">
+                    Transformações
+                  </button>
+                  <div class="dropdown-menu">
+                    <a id="rotacao" class="dropdown-item bg-primary sortable" data-toggle="modal" data-target="#myModal"><i class="fas fa-undo-alt"></i> Rotação</a>
+                    <a id="translacao" class="dropdown-item bg-success sortable"><i class="fas fa-arrows-alt"></i> Translação</a>
+                    <a id="escala" class="dropdown-item bg-warning sortable" data-toggle="modal" data-target="#myModalescala"><i class="fa fa-expand"></i> Escala</a>
+                    <div class="dropdown-divider"></div>
+                    <a id="zoom" class="dropdown-item sortable" style="background-color: #ff0066" data-toggle="modal" data-target="#myModalzoom"><i class="fas fa-expand-arrows-alt"></i> Zoom Extend</a>
+                    <a id="zoom_n" class="dropdown-item sortable" style="background-color: #AC58FA" data-toggle="modal" data-target="#myModalzoomN"><i class="fas fa-expand-arrows-alt"></i> Zoom</a>
+                    <div class="dropdown-divider"></div>
+                  </div>
+                </div>                
             </li>
             <li class="nav-item">
-            	<button id="zoom" type="button" class="btn btn-pink" style="background-color: #ff0066" data-toggle="modal" data-target="#myModalzoom"><i class="fas fa-expand-arrows-alt"></i> Zoom Extend</button>
+                <button id="help" type="button" class="btn" data-toggle="modal" data-target="#myHelp" style="background-color: #64FE2E"><i class="fas fa-question-circle"></i> Ajuda</button>
             </li>
         </ul>
     </div>
@@ -88,23 +101,22 @@
       </div>
     </div>
 
-    <div id="myModaltrans" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="myModalzoomN" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Translação</h5>
+            <h5 class="modal-title">Zoom</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <label for="grau">Selecione as novas coordenadas X e Y: </label><br>
-            <span>X: </span><input id="Xs" type="number" min="0" max="5000" step="1" value="0"><br>
-            <span>Y: </span><input id="Ys" type="number" min="0" max="4500" step="1" value="0">
+            <label for="grau">Selecione a escala do zoom: </label><br>
+            <input id="zN" type="number" min="0.5" max="15" step="1" value="0"><span> vezes</span><br>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button id="trans_ok" type="button" class="btn btn-primary" data-dismiss="modal">Aplicar transformação</button>
+            <button id="zoomN_ok" type="button" class="btn btn-primary" data-dismiss="modal">Aplicar transformação</button>
           </div>
         </div>
       </div>
@@ -119,14 +131,9 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <label for="grau">Selecione a largura e altura da janela: </label><br>
-            <span>Altura: </span><input id="altura" type="number" min="0" max="5000" step="1" value="0"><br>
-            <span>Largura: </span><input id="largura" type="number" min="0" max="4500" step="1" value="0">
-          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button id="zoom_ok" type="button" class="btn btn-primary" data-dismiss="modal">Aplicar transformação</button>
+            <button id="zoom_ok" type="button" class="btn btn-primary" data-dismiss="modal">Aplicar zoom</button>
           </div>
         </div>
       </div>
@@ -144,12 +151,49 @@
           </div>
           <div class="modal-body">
             <label for="grau">Selecione a escala X e Y: </label><br>
-            <span>X: </span><input id="scaleX" type="number" min="0.3" max="15" step="1" value="1"><br>
-            <span>Y: </span><input id="scaleY" type="number" min="0.3" max="15" step="1" value="1">
+            <span>X: </span><input id="scaleX" type="number" min="0.5" max="15" step="1" value="1"><br>
+            <span>Y: </span><input id="scaleY" type="number" min="0.5" max="15" step="1" value="1">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             <button id="escala_ok" type="button" class="btn btn-primary" data-dismiss="modal">Aplicar transformação</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="myHelp" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ajuda</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h3>Como desenhar</h3>
+            <p>Para desenhar uma forma (reta, quadrado, retângulo, círculo ou triângulo), clique sobre o botão com o nome da forma desejada e realize o desenho no canvas através de cliques com o mouse. O desenho de cada forma é realizado da seguinte maneira</p>
+            <p><b>Quadrado/Retângulo:</b> Para esta forma, realize dois cliques no canvas, onde cada clique representará o canto inicial e final da forma.</p>
+            <p><b>Reta:</b> Para esta forma, realize dois cliques no canvas, onde cada clique representará o ponto inicial e final da forma.</p>
+            <p><b>Triângulo:</b> Para esta forma, realize três cliques no canvas, onde cada clique representará os pontos da forma.</p>
+            <p><b>Círculo:</b> Para esta forma, realize dois cliques no canvas, onde o primeiro clique representa o centro e o segundo representa o raio.</p>
+            <h3>Transformações</h3>
+            <p>Para realizar as transformações de translação, rotação, escala, zoom e zoom extend, clique sobre o botão transformações e escolha a opção desejada.</p>
+            <p><b>Rotação: </b>Para realizar uma rotação, clique sobre o botão correspondente, selecione quantos graus deseja rotacionar e confirme. Após a confirmação, clique sobre a figura que deseja rotacionar. Quando a figura for clicada, esta ficará marcada em vermelho. Por fim, clique sobre o ponto sobre o qual deseja realizar a rotação.</p>
+            <p><b>Translação: </b>Para realizar a translação, clique sobre o botão correspondente. Após isso, clique sobre a figura que deseja transladar. Quando a figura for clicada, esta ficará marcada em vermelho. Por fim, clique sobre o ponto onde deseja levar a figura.</p>
+            <p><b>Escala: </b>Para a escala, clique sobre o botão correspondente, selecione a escala desejada para o eixo X e para o eixo Y e confirme. Após a confirmação, clique sobre a figura que deseja transformar. Quando a figura for clicada, esta ficará marcada em vermelho. Por fim, clique sobre o ponto no qual deseja realizar a escala.</p>
+            <p><b>Zoom: </b>Para o zoom, clique sobre o botão correspondente, selecione o fator do zoom e confirme. Após a confirmação, clique sobre o ponto no qual deseja dar zoom.</p>
+            <p><b>Zoom Extend: </b>Para o zoom extend, clique sobre o botão correspondente e confirme a transformação. Após isso a janela sofrerá um zoom centralizando as formas e mantendo seu aspect ratio.</p>
+            <h3>Demais funções</h3>
+            <p>O botão <b>Selecionar</b> realiza a seleção de uma ou mais formas. Para isso, clique sobre o botão e em seguida clique sobre as formas que deseja selecionar. Para remover a seleção clique em alguma área vazia.</p>
+            <p>O botão <b>Apagar</b> apaga uma forma do canvas. Para isso, clique sobre o botão e em seguida clique sobre as formas que deseja apagar.</p>
+            <p>O botão <b>Clear</b> limpa todo o canvas. Para isso, basta clicar sobre o botão.</p>
+            <p>O botão <b>Desfazer</b> volta para um estado antes de alguma mudança. Para isso basta clicar sobre o botão.</p>
+            <p>No canto superior esquerdo são exibidos os eixos X e Y e também a atual posição do cursor no canvas, assim como a largura e altura do canvas. Nesta parte também são exibidas informações sobre as transformações que estão acontecendo.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Ok!</button>
           </div>
         </div>
       </div>

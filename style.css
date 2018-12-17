@@ -49,3 +49,7 @@ img.logoTopo{
         width: 100% !important;
     }
 }
+
+.sortable {
+    cursor: pointer;
+}
